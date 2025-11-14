@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.3.0/dist/leaflet.js"></script>
+    <script type="text/javascript" src="desalojos_copia.js"></script>
+
+    <style>
+        #map { 
+            width: 100%; 
+            height: 900px;
+
+        }
+
+        #map-title {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 25px;
+            z-index: 1000;    
+        }
+
+
+        .popup-image {
+            max-width: 100%; /* Asegura que la imagen no desborde el popup */
+            height: auto;
+            margin-top: 5px; /* Pequeño margen sobre el texto */
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <div id = "map-title"> Ubicaciones de desalojos</div>
+    <div id = "map"></div>
+
+    <script>
+        var map = L.map("map").setView([19.4227, -99.1392], 13);
+        var osm = L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 18
+        }).addTo(map);
+
+
+    ////Variable para ícono personalizado
+    
+    var customIcon = L.icon({
+        iconUrl: 'https://img.freepik.com/vector-premium/puno-hombre-levantado-simbolo-lucha_124715-2551.jpg', // URL de tu ícono
+        iconSize: [25, 41],         // Tamaño del ícono [ancho, alto]
+        iconAnchor: [12, 41],       // El punto del ícono que se "ancla" a las coordenadas (ej. la punta inferior)
+        popupAnchor: [1, -34]
+
+    });
+
+    ///Capa de puntos
+    var puntos_diana = L.geoJSON(desa, {
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {
+                icon: customIcon
+            
+            });
+        },
+       // FUNCIÓN MODIFICADA: Agrega la imagen al contenido del popup
+        onEachFeature: function(feature, layer){
+            if (feature.properties) {
+                // 1. Construir el contenido HTML para el popup
+                var popupContent = 
+                    // Contenido textual existente
+                    '<p> Colonia: ' + feature.properties.COLONIA + 
+                    '</p><p>Tipo de propiedad: ' + feature.properties.TIPO + 
+                    '</p><p>Causa del desalojo: ' + feature.properties.DESCRIPCION  + 
+                    '</p><p>Dirección: ' + feature.properties.CALLE +     
+                    '</p>';
+                
+                // 2. Revisar si la propiedad FOTO_URL existe y no está vacía
+                if (feature.properties.FOTO_URL) {
+                    // 3. Agregar el tag de imagen con la URL
+                    popupContent += 
+                        '<img src="' + feature.properties.FOTO_URL + '" class="popup-image" alt="Foto del Desalojo"/>';
+                }
+
+                // 4. Vincular el contenido al popup
+                layer.bindPopup(popupContent);
+            }
+        }
+    }).addTo(map);
+    
+   //termina capa de puuntos
+   
+   ///controlador de capas 
+   var baseMaps = {
+    "Mapa base": osm 
+   };
+
+   var overlayMaps = {
+    "Ubicación de desalojos": puntos_diana
+   };
+
+   L.control.layers(baseMaps, overlayMaps).addTo(map);
+   
+
+
+    </script>
+</body>    
+</html>
