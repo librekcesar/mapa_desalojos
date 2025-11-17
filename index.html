@@ -5,8 +5,19 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.0/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.3.0/dist/leaflet.js"></script>
     <script type="text/javascript" src="desalojos_copia.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
 
     <style>
+        body, html {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* Opcional: previene barras de desplazamiento no deseadas */
+    }
+
+
         #map { 
             width: 100%; 
             height: 900px;
@@ -39,6 +50,7 @@
 <body>
     <div id = "map-title"> Ubicaciones de desalojos</div>
     <div id = "map"></div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
     <script>
         var map = L.map("map").setView([19.4227, -99.1392], 13);
